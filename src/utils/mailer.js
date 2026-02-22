@@ -5,7 +5,11 @@ async function sendEmail({ to, subject, html }) {
     throw new Error('BREVO_API_KEY missing');
   }
 
-  const response = await axios.post(
+  if (!process.env.SENDER_EMAIL) {
+    throw new Error('SENDER_EMAIL missing');
+  }
+
+  await axios.post(
     'https://api.brevo.com/v3/smtp/email',
     {
       sender: {
@@ -23,8 +27,24 @@ async function sendEmail({ to, subject, html }) {
       },
     }
   );
-
-  return response.data;
 }
 
-module.exports = sendEmail;
+async function sendVerificationEmail(email, verificationLink) {
+  const subject = 'Verify your FlowCore account';
+
+  const html = `
+    <h2>Welcome to FlowCore</h2>
+    <p>Please verify your account by clicking the link below:</p>
+    <a href="${verificationLink}">Verify Account</a>
+  `;
+
+  await sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+module.exports = {
+  sendVerificationEmail,
+};
