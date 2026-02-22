@@ -39,9 +39,11 @@
     </a>
 
     <!-- Avatar -->
-    <div class="merchant-avatar" title="<%= merchantName %>">
-      <%= merchantName ? merchantName.charAt(0).toUpperCase() : 'F' %>
-    </div>
+    <% const name = typeof merchantName !== 'undefined' ? merchantName : null; %>
+
+<div class="merchant-avatar" title="<%= name || '' %>">
+  <%= name ? name.charAt(0).toUpperCase() : 'F' %>
+</div>
 
     <!-- Logout -->
     <form method="POST" action="/logout" class="logout-form">
