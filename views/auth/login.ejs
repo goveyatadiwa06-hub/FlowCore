@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || 'Login' %> - FlowCore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body class="login-body">
+
+  <main class="login-container">
+
+    <section class="login-card" aria-labelledby="login-title">
+
+      <header class="login-header">
+        <h1 id="login-title">FlowCore</h1>
+        <p>Merchant login</p>
+      </header>
+
+      <% if (error) { %>
+        <div class="alert error" role="alert">
+          <strong>Login failed</strong><br>
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/login" class="form-stack" novalidate>
+
+        <% if (typeof csrfToken !== 'undefined') { %>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% } %>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value="<%= email || '' %>"
+            required
+            placeholder="you@company.com"
+            autocomplete="email"
+            inputmode="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            placeholder="••••••••"
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Sign in
+        </button>
+
+      </form>
+
+      <p class="login-footnote">
+        Don’t have an account?
+        <a href="/register">Create one</a>
+      </p>
+      
+      <p class="login-footnote">
+        Secure session login. If session expires, refresh and try again.
+      </p>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

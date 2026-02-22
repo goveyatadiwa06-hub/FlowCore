@@ -1,0 +1,109 @@
+<div class="page-container">
+<div class="status-wrapper">
+    <div class="status-card">
+  
+      <h2 class="status-title">EcoCash Prompt Sent</h2>
+  
+      <p class="status-message" id="statusMessage">
+        Waiting for customer to approve payment...
+      </p>
+  
+      <div class="status-loader" id="loader"></div>
+  
+      <div class="status-actions">
+        <a href="/dashboard/new-payment" class="btn btn-outline btn-full">
+          Create Another Payment
+        </a>
+      </div>
+  
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+    
+      const reference = "<%= reference %>";
+      const message = document.getElementById("statusMessage");
+      const loader = document.getElementById("loader");
+      const actions = document.getElementById("actions");
+    
+      let pollingInterval;
+      let timeoutLimit;
+    
+      try {
+    
+        // STEP 1: CHECK CURRENT STATUS
+        const initialRes = await fetch(`/pay/status/${reference}`, {
+          cache: "no-store"
+        });
+    
+        const initialData = await initialRes.json();
+    
+        if (!initialData || !initialData.status) return;
+    
+        // STEP 2: ONLY INITIATE PUSH IF PENDING
+        if (initialData.status === "pending") {
+          await fetch(`/push/${reference}`, { method: "POST" });
+        }
+    
+        // If already final state, render immediately
+        if (["paid", "failed", "cancelled"].includes(initialData.status)) {
+          renderFinalState(initialData.status);
+          return;
+        }
+    
+        // STEP 3: START POLLING
+        pollingInterval = setInterval(checkStatus, 4000);
+    
+        // Timeout safety (3 minutes)
+        timeoutLimit = setTimeout(() => {
+          clearInterval(pollingInterval);
+          loader.style.display = "none";
+          message.innerText = "Payment timed out.";
+          message.classList.add("failed");
+          actions.style.display = "block";
+        }, 180000);
+    
+      } catch (err) {
+        loader.style.display = "none";
+        message.innerText = "Error initiating payment.";
+        message.classList.add("failed");
+        actions.style.display = "block";
+      }
+    
+      async function checkStatus() {
+        const res = await fetch(`/pay/status/${reference}`, {
+          cache: "no-store"
+        });
+    
+        const data = await res.json();
+    
+        if (!data || !data.status) return;
+    
+        if (["paid", "failed", "cancelled"].includes(data.status)) {
+          clearInterval(pollingInterval);
+          clearTimeout(timeoutLimit);
+          renderFinalState(data.status);
+        }
+      }
+    
+      function renderFinalState(status) {
+        loader.style.display = "none";
+    
+        if (status === "paid") {
+          message.innerText = "Payment successful.";
+          message.classList.remove("failed");
+          message.classList.add("success");
+        } else {
+          message.innerText = "Payment failed or cancelled.";
+          message.classList.remove("success");
+          message.classList.add("failed");
+        }
+    
+        actions.style.display = "block";
+      }
+    
+    });
+    </script>
+</div>    
+    

@@ -1,0 +1,52 @@
+<%
+  const current =
+    typeof active !== 'undefined' && active ? active : '';
+
+  const merchant =
+    typeof merchantName !== 'undefined' && merchantName
+      ? merchantName
+      : 'FlowCore Merchant';
+%>
+
+<aside class="sidebar">
+
+  <!-- BRAND -->
+  <div class="sidebar-brand">
+    <h1 class="brand-title">FlowCore</h1>
+    <p class="brand-subtitle">Payments Infrastructure</p>
+  </div>
+
+  <!-- NAV -->
+  <nav class="sidebar-nav" aria-label="Main navigation">
+
+    <a href="/dashboard"
+       class="nav-link <%= current === 'dashboard' ? 'active' : '' %>">
+      Dashboard
+    </a>
+
+    <a href="/dashboard/new-payment"
+       class="nav-link <%= current === 'create' ? 'active' : '' %>">
+      Create Payment
+    </a>
+
+    <a href="/dashboard/transactions"
+       class="nav-link <%= current === 'transactions' ? 'active' : '' %>">
+      Transactions
+    </a>
+
+    <a href="/settings"
+       class="nav-link <%= current === 'settings' ? 'active' : '' %>">
+      Settings
+    </a>
+
+  </nav>
+
+  <!-- FOOTER -->
+  <div class="sidebar-footer">
+    <span class="merchant-label">Merchant Account</span>
+    <span class="merchant-name" title="<%= merchant %>">
+      <%= merchant %>
+    </span>
+  </div>
+
+</aside>

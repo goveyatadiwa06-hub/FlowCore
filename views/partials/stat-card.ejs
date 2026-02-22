@@ -1,0 +1,24 @@
+<%
+  const cardTitle = typeof title !== 'undefined' ? title : '';
+  const cardValue = typeof value !== 'undefined' ? value : '—';
+  const cardTrend = typeof trend !== 'undefined' ? trend : null;
+  const trendClassName = typeof trendClass !== 'undefined' ? trendClass : '';
+%>
+
+<div class="card stat-card">
+
+  <div class="stat-title">
+    <%= cardTitle %>
+  </div>
+
+  <div class="stat-value">
+    <%= cardValue %>
+  </div>
+
+  <% if (cardTrend) { %>
+    <div class="stat-trend <%= trendClassName %>">
+      <%= cardTrend %>
+    </div>
+  <% } %>
+
+</div>

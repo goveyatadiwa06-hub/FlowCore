@@ -1,0 +1,71 @@
+<div class="page-container">
+ <p class="page-subtitle">
+    View and manage all payment transactions.
+  </p>
+  
+  <div class="card">
+  
+    <div class="card-header">
+      <h3 class="card-title">Latest Transactions</h3>
+  
+      <a href="/dashboard/export" class="btn btn-outline">
+        Export CSV
+      </a>
+    </div>
+  
+    <% if (!transactions || transactions.length === 0) { %>
+  
+      <div class="table-empty" style="padding:30px;">
+        No transactions yet.
+      </div>
+  
+    <% } else { %>
+  
+    <div class="table-wrapper">
+      <table class="table">
+  
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <% transactions.forEach(tx => { %>
+            <tr class="table-row-click"
+                onclick="window.location='/dashboard/transactions/<%= tx.id %>'">
+  
+              <td>
+                <strong><%= tx.reference %></strong>
+              </td>
+  
+              <td>
+                $<%= Number(tx.amount || 0).toFixed(2) %>
+              </td>
+  
+              <td>
+                <span class="badge badge-<%= tx.status %>">
+                  <%= tx.status %>
+                </span>
+              </td>
+  
+              <td class="table-meta">
+                <%= tx.created_at
+                  ? new Date(tx.created_at).toLocaleString()
+                  : '' %>
+              </td>
+  
+            </tr>
+          <% }) %>
+        </tbody>
+  
+      </table>
+    </div>
+  
+    <% } %>
+  
+  </div>
+</div>

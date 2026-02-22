@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || 'Register' %> - FlowCore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body class="login-body">
+
+  <main class="login-container">
+
+    <section class="login-card" aria-labelledby="register-title">
+
+      <header class="login-header">
+        <h1 id="register-title">FlowCore</h1>
+        <p>Create merchant account</p>
+      </header>
+
+      <% if (error) { %>
+        <div class="alert error" role="alert">
+          <strong>Registration failed</strong><br>
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/register" class="form-stack" novalidate>
+
+        <% if (typeof csrfToken !== 'undefined') { %>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% } %>
+
+        <div class="form-group">
+          <label for="businessName">Business Name</label>
+          <input
+            id="businessName"
+            type="text"
+            name="businessName"
+            required
+            placeholder="Your Business Name"
+            autocomplete="organization"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value="<%= email || '' %>"
+            required
+            placeholder="you@company.com"
+            autocomplete="email"
+            inputmode="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            placeholder="Minimum 8 characters"
+            autocomplete="new-password"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            required
+            placeholder="Re-enter password"
+            autocomplete="new-password"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Create Account
+        </button>
+
+      </form>
+
+      <p class="login-footnote">
+        Already have an account?
+        <a href="/login">Sign in</a>
+      </p>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

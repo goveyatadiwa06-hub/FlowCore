@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - FlowCore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body class="login-body">
+
+  <main class="login-container">
+
+    <section class="login-card">
+
+      <header class="login-header">
+        <h1>Email Sent</h1>
+        <p>Verify your account</p>
+      </header>
+
+      <div class="alert info">
+        <strong>Check your inbox</strong><br><br>
+        We sent a verification link to:<br>
+        <strong><%= email %></strong>
+      </div>
+
+      <p style="margin-top:20px;">
+        If you don’t see it:
+      </p>
+
+      <ul style="text-align:left; margin:10px 0;">
+        <li>Check spam folder</li>
+        <li>Wait 1–2 minutes</li>
+        <li>Ensure you typed email correctly</li>
+      </ul>
+
+      <div style="margin-top:25px;">
+        <a href="/login" class="btn btn-outline btn-block">
+          Back to Login
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

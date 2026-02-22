@@ -1,0 +1,243 @@
+<div class="page-container">
+<!-- INFRA HEADER (Immediately below icons) -->
+<div class="infra-header">
+
+  <div class="infra-left">
+    <div class="infra-title">FlowCore Payments Network</div>
+    <div class="infra-merchant">
+      <strong><%= merchantName %></strong>
+      <span class="infra-meta">
+        Merchant ID: <%= merchantId || 'MC-XXXX' %>
+      </span>
+    </div>
+  </div>
+
+  <div class="infra-right">
+    <div class="infra-status live">
+      ● LIVE
+    </div>
+    <div class="infra-meta">
+      <%= new Date().toLocaleString('en-ZW', {
+            timeZone: 'Africa/Harare',
+            weekday: 'short',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          }) %> · CAT
+    </div>
+    <div class="infra-meta small">
+      DB: Connected · Webhooks: Active
+    </div>
+  </div>
+
+</div>
+
+
+<!-- OVERVIEW + ACTION ROW -->
+<div class="page-header-row">
+  <h1 class="page-title">Overview</h1>
+
+  <a href="/dashboard/new-payment" class="btn-create">
+    + Initiate Payment
+  </a>
+</div>
+
+
+<!-- SUBTITLE -->
+<p class="page-subtitle">
+  Here's what's happening with your business today.
+</p>
+
+
+<!-- METRIC CARDS -->
+<section class="cards">
+
+  <div class="card stat-card">
+    <div class="stat-title">Today's Revenue</div>
+    <div class="stat-value">
+      $<%= todayRevenue || '0.00' %>
+    </div>
+    <div class="stat-trend trend-up">
+      ↑ Today
+    </div>
+  </div>
+
+  <div class="card stat-card">
+    <div class="stat-title">Transactions</div>
+    <div class="stat-value">
+      <%= totalTransactionsToday || 0 %>
+    </div>
+    <div class="stat-trend trend-neutral">
+      Today
+    </div>
+  </div>
+
+  <div class="card stat-card">
+    <div class="stat-title">Success Rate</div>
+    <div class="stat-value">
+      <%= successRate || '0%' %>
+    </div>
+    <div class="stat-trend trend-up">
+      Payment success
+    </div>
+  </div>
+
+</section>
+
+
+<!-- GRID -->
+<div class="dashboard-grid">
+
+  <!-- Revenue Chart Card -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Revenue — Last 7 Days</h3>
+        <p class="table-meta">Real completed transactions</p>
+      </div>
+    </div>
+
+    <div class="chart-container" style="height:260px;">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </div>
+
+
+  <!-- Recent Transactions -->
+  <div class="card">
+
+    <div class="card-header">
+      <h3 class="card-title">Recent Transactions</h3>
+      <a href="/dashboard/transactions" class="link-small">
+        View All →
+      </a>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if (transactions && transactions.length > 0) { %>
+          <% transactions.forEach(tx => { %>
+            <tr>
+              <td>
+                <strong><%= tx.reference %></strong>
+                <div class="table-meta">
+                  <%= tx.created_at
+                    ? new Date(tx.created_at).toLocaleString('en-ZW', {
+                        timeZone: 'Africa/Harare',
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : '' %>
+                </div>
+              </td>
+
+              <td>
+                $<%= Number(tx.amount || 0).toFixed(2) %>
+              </td>
+
+              <td>
+                <span class="badge badge-<%= tx.status %>">
+                  <%= tx.status %>
+                </span>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="3" class="table-empty">
+              No recent transactions
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+  </div> <!-- End Recent Transactions -->
+
+</div> <!-- End dashboard-grid -->
+
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Revenue Data JSON -->
+<script id="revenue-data" type="application/json">
+  <%- JSON.stringify(revenueTrend || []) %>
+</script>
+
+<script>
+  const revenueData = JSON.parse(
+    document.getElementById('revenue-data').textContent || '[]'
+  );
+
+  if (!Array.isArray(revenueData)) {
+    console.error('Revenue data is invalid:', revenueData);
+  }
+
+  const labels = revenueData.map(d => {
+  const date = new Date(d.date);
+  return date.toLocaleDateString('en-ZW', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short'
+  });
+});
+
+
+  const totals = revenueData.map(d => Number(d.total) || 0);
+
+  const canvas = document.getElementById('revenueChart');
+
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Revenue (USD)',
+          data: totals,
+          tension: 0.35,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37, 99, 235, 0.08)',
+          fill: true,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: value => '$' + Number(value).toFixed(2)
+            }
+          }
+        }
+      }
+    });
+  } else {
+    console.error('Canvas not found');
+  }
+</script>
+</script>
+
+</div> <!-- END page-container -->

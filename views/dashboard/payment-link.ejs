@@ -1,0 +1,69 @@
+<div class="page-container">
+<div class="status-wrapper">
+
+    <div class="status-card">
+  
+      <h2 class="status-title">Payment Link Created</h2>
+  
+      <p class="status-message">
+        Share this link with your customer to complete payment.
+      </p>
+  
+      <!-- LINK BOX -->
+      <div class="link-box">
+        <input
+          type="text"
+          value="<%= paymentLink %>"
+          id="paylink"
+          readonly
+        />
+      </div>
+  
+      <!-- ACTION BUTTONS -->
+      <div class="button-stack">
+  
+        <button
+          type="button"
+          class="btn btn-outline btn-full"
+          onclick="copyLink()"
+        >
+          Copy Link
+        </button>
+  
+        <a
+          href="https://wa.me/?text=<%= encodeURIComponent('Pay here: ' + paymentLink) %>"
+          target="_blank"
+          class="btn btn-outline btn-full"
+        >
+          Share via WhatsApp
+        </a>
+  
+        <a
+          href="/dashboard/new-payment"
+          class="btn btn-primary btn-full"
+        >
+          Create Another Payment
+        </a>
+  
+      </div>
+  
+    </div>
+  
+  </div>
+  
+  <script>
+  function copyLink() {
+    const input = document.getElementById('paylink');
+    if (!input) return;
+  
+    navigator.clipboard.writeText(input.value)
+      .then(() => {
+        // Optional: quick feedback
+        alert("Link copied to clipboard.");
+      })
+      .catch(() => {
+        alert("Failed to copy link.");
+      });
+  }
+  </script>
+</div> 

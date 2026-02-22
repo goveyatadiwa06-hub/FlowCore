@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || 'Admin' %> - FlowCore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+  <main class="admin-container">
+
+    <!-- HEADER -->
+    <section class="card admin-header">
+      <div class="admin-header-row">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p class="page-subtext">
+            Signed in as <strong><%= email %></strong>
+          </p>
+        </div>
+
+        <form method="POST" action="/logout">
+          <button type="submit" class="btn">
+            Logout
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- STATUS -->
+    <section class="card">
+      <div class="stat-title">System Status</div>
+      <p class="card-text">
+        You are logged in. Admin tools can be added here.
+      </p>
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="card">
+      <div class="stat-title">Quick Links</div>
+
+      <div class="admin-links">
+        <a href="/health">/health</a>
+        <a href="/login">/login</a>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

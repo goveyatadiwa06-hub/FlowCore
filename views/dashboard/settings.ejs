@@ -1,0 +1,61 @@
+<div class="page-container">
+<p class="page-subtitle">
+  Connect your Paynow account to start receiving payments.
+</p>
+
+<div class="card form-card">
+
+  <% if (success) { %>
+    <div class="alert success">
+      Paynow connection saved successfully.
+    </div>
+  <% } %>
+
+  <% if (error) { %>
+    <div class="alert error">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/settings" class="form-stack">
+
+    <div class="form-group">
+      <label for="integrationId">Integration ID</label>
+      <input
+        id="integrationId"
+        type="text"
+        name="integrationId"
+        value="<%= integrationId || '' %>"
+        placeholder="e.g. 12345"
+        required
+        autocomplete="off"
+      />
+      <small class="form-hint">
+        Provided by Paynow when your merchant account is approved.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="integrationKey">Integration Key</label>
+      <input
+        id="integrationKey"
+        type="text"
+        name="integrationKey"
+        value="<%= integrationKey || '' %>"
+        placeholder="Paste your integration key"
+        required
+        autocomplete="off"
+      />
+      <small class="form-hint">
+        Keep this key secure. It is encrypted when saved.
+      </small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      Save Connection
+    </button>
+
+  </form>
+
+</div>
+</div>
