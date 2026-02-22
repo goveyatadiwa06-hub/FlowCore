@@ -229,7 +229,9 @@ console.log("Email valid?", isValidEmail(email));
       [businessName, email, hash, verificationToken, expires]
     );
 
-    await sendVerificationEmail(email, verificationToken);
+    const verificationLink = `${process.env.BASE_URL}/verify-email?token=${verificationToken}`;
+
+await sendVerificationEmail(email, verificationLink);
 
     return res.redirect(303, `/check-email?email=${encodeURIComponent(email)}`);
 
