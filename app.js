@@ -167,6 +167,11 @@ app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev')
 );
 
+//Page Front//
+
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
 
 // =======================
 // ROUTES
