@@ -25,7 +25,14 @@
           <%= error %>
         </div>
       <% } %>
-
+      <% if (showResend) { %>
+        <form method="POST" action="/resend-verification" style="margin-top: 10px;">
+          <input type="hidden" name="email" value="<%= email %>" />
+          <button type="submit" class="btn-link">
+            Resend verification email
+          </button>
+        </form>
+      <% } %>
       <form method="POST" action="/login" class="form-stack" novalidate>
 
         <% if (typeof csrfToken !== 'undefined') { %>

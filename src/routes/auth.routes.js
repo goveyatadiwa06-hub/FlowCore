@@ -60,13 +60,15 @@ router.get('/login', (req, res) => {
   const error = consumeFlash(req, 'loginError');
   const email = consumeFlash(req, 'loginEmail');
   const csrfToken = issueCsrfToken(req);
-
+  const showResend = consumeFlash(req, 'showResend');
+  
   return res.render('auth/login', {
     layout: false,
     title: 'Merchant Login',
     error,
     email,
-    csrfToken
+    csrfToken,
+    showResend
   });
 });
 
@@ -107,6 +109,12 @@ router.post('/login', authLimiter, async (req, res) => {
 
     const merchant = result.rows[0];
 
+    console.log("Merchant found:", !!merchant);
+
+if (merchant) {
+  console.log("Email verified:", merchant.email_verified);
+}
+
     const hash = merchant?.password_hash || '$2b$10$invalidhashplaceholder';
     let passwordOk = false;
 
@@ -123,7 +131,9 @@ router.post('/login', authLimiter, async (req, res) => {
     }
 
     if (!merchant.email_verified) {
-      setFlash(req, 'loginError', 'Please verify your email before logging in.');
+      setFlash(req, 'loginError', 'Email not verified.');
+      setFlash(req, 'loginEmail', email);
+      setFlash(req, 'showResend', true);
       return res.redirect(303, '/login');
     }
 
@@ -310,7 +320,44 @@ router.get('/email-verified', (req, res) => {
   });
 });
 
+router.post('/resend-verification', authLimiter, async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
 
+    const result = await pool.query(
+      `SELECT id FROM merchants 
+       WHERE LOWER(email) = $1 
+       AND email_verified = false`,
+      [email]
+    );
+
+    if (result.rowCount === 0) {
+      return res.redirect('/login');
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await pool.query(
+      `UPDATE merchants
+       SET email_verification_token = $1,
+           email_verification_expires = $2
+       WHERE LOWER(email) = $3`,
+      [token, expires, email]
+    );
+
+    await sendVerificationEmail(email, token);
+
+    return res.redirect(
+      303,
+      `/check-email?email=${encodeURIComponent(email)}`
+    );
+
+  } catch (err) {
+    console.error('Resend verification error:', err);
+    return res.redirect('/login');
+  }
+});
 
 /* =======================================================
    LOGOUT
