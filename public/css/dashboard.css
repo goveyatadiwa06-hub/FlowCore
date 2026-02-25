@@ -1276,3 +1276,32 @@ input:focus, textarea:focus {
   color: #6b7280;
   margin-top: 4px;
 }
+
+/* ==============================
+   Resend Verification Block
+============================== */
+
+.resend-wrapper {
+  margin-top: 16px;
+}
+
+.btn-secondary-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline;
+  transition: opacity 0.2s ease;
+}
+
+.btn-secondary-link:hover {
+  opacity: 0.8;
+}
+
+.btn-secondary-link:focus {
+  outline: none;
+}
