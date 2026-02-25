@@ -346,7 +346,8 @@ router.post('/resend-verification', authLimiter, async (req, res) => {
       [token, expires, email]
     );
 
-    await sendVerificationEmail(email, token);
+    const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
+await sendVerificationEmail(email, verificationLink);
 
     return res.redirect(
       303,
@@ -357,6 +358,7 @@ router.post('/resend-verification', authLimiter, async (req, res) => {
     console.error('Resend verification error:', err);
     return res.redirect('/login');
   }
+  
 });
 
 /* =======================================================
